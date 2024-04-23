@@ -1,10 +1,10 @@
 from datasets import load_dataset
-from transformers import AutoTokenizer
+from transformers import LlamaTokenizerFast
 
 dataset1 = load_dataset("IlyaGusev/rulm")["train"]
 dataset2 = load_dataset("code_search_net", "all")["test"]
 
-tokenizer = AutoTokenizer.from_pretrained("chargoddard/llama3-42b-v0")
+tokenizer = LlamaTokenizerFast.from_pretrained("hf-internal-testing/llama-tokenizer")
 
 batch_size = 1024
 
