@@ -2,7 +2,7 @@ from datasets import load_dataset, Dataset
 from transformers import AutoTokenizer
 from tqdm import tqdm
 
-dataset1 = load_dataset("IlyaGusev/rulm")["train"]
+dataset1 = load_dataset("IlyaGusev/rulm")
 dataset2 = load_dataset("code_search_net", "all")
 
 data = {"text": []}
