@@ -7,11 +7,11 @@ dataset2 = load_dataset("code_search_net", "all")
 
 data = {"text": []}
 
-for data in tqdm(dataset1["train"]):
-    data["text"].append(data["text"])
+for item in tqdm(dataset1["train"]):
+    data["text"].append(item["text"])
 
 for data in tqdm(dataset2["test"]):
-    data["text"].append(data["whole_func_string"])
+    data["text"].append(item["whole_func_string"])
 
 dataset_cc = Dataset.from_dict(data)
 dataset_cc = dataset_cc.shuffle()
