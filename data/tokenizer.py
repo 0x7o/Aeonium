@@ -1,12 +1,11 @@
 from datasets import load_dataset
-from tokenizers import ByteLevelBPETokenizer
-from transformers import PreTrainedTokenizer
+from transformers import AutoTokenizer
 
 dataset1 = load_dataset("IlyaGusev/rulm")
 dataset1 = dataset1.remove_columns(["meta"])
 dataset2 = load_dataset("code_search_net", "all")
 
-tokenizer = ByteLevelBPETokenizer()
+tokenizer = AutoTokenizer.from_pretrained("Xenova/llama-3-tokenizer")
 
 batch_size = 1000
 
@@ -19,7 +18,7 @@ def batch_iterator():
         yield dataset2["test"][i : i + batch_size]["whole_func_string"]
 
 
-new_tokenizer = tokenizer.train_from_iterator(
+tokenizer = tokenizer.train_new_from_iterator(
     batch_iterator(),
     vocab_size=128000,
     special_tokens=[
@@ -29,9 +28,4 @@ new_tokenizer = tokenizer.train_from_iterator(
     ],
 )
 
-tokenizer = PreTrainedTokenizer(
-    tokenizer_object=new_tokenizer,
-    bos_token="<|end_of_text|>",
-    eos_token="<|end_of_text|>",
-)
 tokenizer.push_to_hub("aeonium/Aeonium-v1-Base-7B")
