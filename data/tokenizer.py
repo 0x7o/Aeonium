@@ -14,7 +14,7 @@ def batch_iterator():
         yield dataset1[i : i + batch_size]["text"]
 
     for i in range(0, len(dataset2), batch_size):
-        yield dataset2[i : i + batch_size]["text"]
+        yield dataset2[i : i + batch_size]["whole_func_string"]
 
 
 new_tokenizer = tokenizer.train_new_from_iterator(
