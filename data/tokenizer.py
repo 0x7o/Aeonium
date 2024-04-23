@@ -12,13 +12,13 @@ tokenizer = ByteLevelBPETokenizer()
 batch_size = 1000
 
 
-def batch_iterator():
-    for i in range(0, len(dataset1), batch_size):
-        yield dataset1[i : i + batch_size]["text"]
+def batch_iterator(dataset, batch_size=1_000):
+    for batch in dataset.iter(batch_size=batch_size):
+        yield batch["text"]
 
 
 new_tokenizer = tokenizer.train_from_iterator(
-    batch_iterator(),
+    batch_iterator(dataset1),
     vocab_size=128000,
     special_tokens=[
         "<|end_of_text|>",
