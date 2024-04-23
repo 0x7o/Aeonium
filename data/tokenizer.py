@@ -4,9 +4,9 @@ from transformers import AutoTokenizer
 dataset1 = load_dataset("IlyaGusev/rulm")["train"]
 dataset2 = load_dataset("code_search_net", "all")["test"]
 
-tokenizer = AutoTokenizer.from_pretrained("Xenova/llama-3-tokenizer")
+tokenizer = AutoTokenizer.from_pretrained("gpt2")
 
-batch_size = 10000
+batch_size = 1000
 
 
 def batch_iterator():
