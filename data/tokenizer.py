@@ -6,7 +6,7 @@ dataset2 = load_dataset("code_search_net", "all")["test"]
 
 tokenizer = AutoTokenizer.from_pretrained("Xenova/llama-3-tokenizer")
 
-batch_size = 1000
+batch_size = 10000
 
 
 def batch_iterator():
