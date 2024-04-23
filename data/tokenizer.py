@@ -21,7 +21,7 @@ def batch_iterator():
 tokenizer = tokenizer.train_new_from_iterator(
     batch_iterator(),
     vocab_size=128000,
-    special_tokens=[
+    new_special_tokens=[
         "<|end_of_text|>",
         "<|im_end|>",
         "<|im_start|>",
