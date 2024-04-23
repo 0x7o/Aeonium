@@ -4,7 +4,7 @@ from transformers import LlamaTokenizerFast
 dataset1 = load_dataset("IlyaGusev/rulm")["train"]
 dataset2 = load_dataset("code_search_net", "all")["test"]
 
-tokenizer = LlamaTokenizerFast.from_pretrained("hf-internal-testing/llama-tokenizer")
+tokenizer = LlamaTokenizerFast()
 
 batch_size = 1024
 
