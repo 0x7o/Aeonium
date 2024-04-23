@@ -1,10 +1,10 @@
 from datasets import load_dataset
-from transformers import LlamaTokenizerFast
+from transformers import LlamaTokenizer
 
 dataset1 = load_dataset("IlyaGusev/rulm")["train"]
 dataset2 = load_dataset("code_search_net", "all")["test"]
 
-tokenizer = LlamaTokenizerFast()
+tokenizer = LlamaTokenizer.from_pretrained("Xenova/llama-3-tokenizer")
 
 batch_size = 1024
 
