@@ -3,9 +3,7 @@ from tokenizers import ByteLevelBPETokenizer
 from transformers import PreTrainedTokenizerFast
 
 dataset1 = load_dataset("IlyaGusev/rulm")
-dataset1 = dataset1.remove_columns([
-        col for col in dataset1.column_names if col != "text"
-    ])
+dataset1 = dataset1.remove_columns(["meta"])
 
 tokenizer = ByteLevelBPETokenizer()
 
