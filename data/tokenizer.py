@@ -1,10 +1,19 @@
-from datasets import load_dataset, concatenate_datasets
+from datasets import load_dataset, Dataset
 from transformers import AutoTokenizer
+from tqdm import tqdm
 
 dataset1 = load_dataset("IlyaGusev/rulm")["train"]
-dataset2 = load_dataset("code_search_net", "all", split="test")["test"]
+dataset2 = load_dataset("code_search_net", "all")
 
-dataset_cc = concatenate_datasets(dataset1, dataset2)
+data = {"text": []}
+
+for data in tqdm(dataset1["train"]):
+    data["text"].append(data["text"])
+
+for data in tqdm(dataset2["test"]):
+    data["text"].append(data["whole_func_string"])
+
+dataset_cc = Dataset.from_dict(data)
 dataset_cc = dataset_cc.shuffle()
 
 tokenizer = AutoTokenizer.from_pretrained("chargoddard/llama3-42b-v0")
