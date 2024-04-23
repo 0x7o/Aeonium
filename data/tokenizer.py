@@ -1,5 +1,5 @@
 from datasets import load_dataset
-from tokenizers import SentencePieceBPETokenizer
+from tokenizers import ByteLevelBPETokenizer
 from transformers import PreTrainedTokenizerFast
 
 dataset1 = load_dataset("IlyaGusev/rulm")["train"]
