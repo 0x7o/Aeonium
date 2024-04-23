@@ -10,7 +10,7 @@ data = {"text": []}
 for item in tqdm(dataset1["train"]):
     data["text"].append(item["text"])
 
-for data in tqdm(dataset2["test"]):
+for item in tqdm(dataset2["test"]):
     data["text"].append(item["whole_func_string"])
 
 dataset_cc = Dataset.from_dict(data)
