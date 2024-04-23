@@ -1,11 +1,8 @@
-from datasets import load_dataset, concatenate_datasets
+from datasets import load_dataset
 from transformers import AutoTokenizer
 
-dataset1 = load_dataset("IlyaGusev/rulm")
-dataset2 = load_dataset("code_search_net", "all")
-
-dataset_cc = concatenate_datasets(dataset1["train"], dataset2["test"])
-dataset_cc = dataset_cc.shuffle()
+dataset1 = load_dataset("IlyaGusev/rulm")["train"]
+dataset2 = load_dataset("code_search_net", "all")["test"]
 
 tokenizer = AutoTokenizer.from_pretrained("chargoddard/llama3-42b-v0")
 
@@ -13,8 +10,11 @@ batch_size = 1024
 
 
 def batch_iterator():
-    for i in range(0, len(dataset_cc), batch_size):
-        yield dataset_cc[i : i + batch_size]["text"]
+    for i in range(0, len(dataset1), batch_size):
+        yield dataset1[i : i + batch_size]["text"]
+
+    for i in range(0, len(dataset2), batch_size):
+        yield dataset2[i : i + batch_size]["text"]
 
 
 new_tokenizer = tokenizer.train_new_from_iterator(
