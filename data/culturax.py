@@ -32,8 +32,8 @@ def process_text(text: str):
 
 
 def save_pickle(data, file_path):
-    with open(file_path, "wb"):
-        pickle.dump(data, file_path)
+    with open(file_path, "wb") as f:
+        pickle.dump(data, f)
 
 
 def tokenization(example):
