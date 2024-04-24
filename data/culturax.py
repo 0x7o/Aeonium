@@ -32,8 +32,7 @@ def process_text(text: str):
 
 
 def save_pickle(data, file_path):
-    array = pa.array(data)
-    table = pa.Table.from_arrays([array], names=['tokens'])
+    table = pa.Table.from_arrays([data], names=['tokens'])
     pq.write_table(table, file_path)
 
 
