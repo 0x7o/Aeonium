@@ -53,6 +53,7 @@ def main(output_dir: str, batch_size: int):
         dataset = Dataset.from_pandas(table.to_pandas())
 
         results = dataset.map(tokenization, batched=True, batch_size=batch_size)
+        print(len(results))
 
         save_pickle(results, f"{output_dir}/ru_part_{str(i).zfill(5)}.parquet")
         os.remove(file_path)
