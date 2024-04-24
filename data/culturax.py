@@ -3,9 +3,8 @@ from transformers import AutoTokenizer
 import pyarrow.parquet as pq
 from tqdm import tqdm
 import argparse
+import pyarrow as pa
 import requests
-import bz2
-import pickle
 import os
 
 hf_token = os.getenv("HF_TOKEN")
@@ -33,8 +32,9 @@ def process_text(text: str):
 
 
 def save_pickle(data, file_path):
-    with bz2.BZ2File(file_path, 'wb') as file:
-        pickle.dump(data, file, protocol=pickle.HIGHEST_PROTOCOL)
+    array = pa.array(data)
+    table = pa.Table.from_arrays([array], names=['tokens'])
+    pq.write_table(table, file_path)
 
 
 def tokenization(example):
@@ -54,7 +54,7 @@ def main(output_dir: str, batch_size: int):
 
         results = dataset.map(tokenization, batched=True, batch_size=batch_size)
 
-        save_pickle(results, f"{output_dir}/ru_part_{str(i).zfill(5)}.pkl.bz2")
+        save_pickle(results, f"{output_dir}/ru_part_{str(i).zfill(5)}.parquet")
         os.remove(file_path)
 
 
