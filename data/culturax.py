@@ -53,7 +53,7 @@ def main(output_dir: str, batch_size: int):
 
         with open(f"{output_dir}/ru_part_{str(i).zfill(5)}_processed.parquet", "wb") as f:
             dataset = dataset.map(tokenization, batched=True, batch_size=batch_size)
-            dataset.to_parquet(f)
+            dataset.to_pandas().to_parquet(f)
 
         os.remove(file_path)
 
