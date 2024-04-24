@@ -43,7 +43,7 @@ def save_pickle(data, file_path):
 
 
 def worker_task(text_batch):
-    return [process_text(text) for text in text_batch]
+    return [process_text(text) for text in tqdm(text_batch)]
 
 
 def main(output_dir: str, num_workers: int):
