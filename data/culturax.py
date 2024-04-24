@@ -34,6 +34,7 @@ def parquet_iterator(file_path):
 
 
 def process_batch(batch):
+    batch = [str(x) for x in batch]
     return tokenizer.batch_encode_plus(batch)
 
 
@@ -54,8 +55,6 @@ def main(output_dir: str, num_workers: int):
         chunk_size = len(data_iter) // num_workers
 
         chunks = [data_iter[i * chunk_size:(i + 1) * chunk_size] for i in range(num_workers)]
-        print(len(chunks))
-        print(len(chunks[0]))
 
         with Pool(num_workers) as pool:
             results = pool.map(process_batch, chunks)
