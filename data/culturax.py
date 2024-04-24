@@ -43,6 +43,9 @@ def process_batch(args):
 
 
 def process_file(file_path, output_dir, num_workers):
+    #if os.path.exists(f"{output_dir}/{os.path.basename(file_path).split('.')[0]}.pkl"):
+    #    return
+
     table = pq.read_table(file_path)
     tokenizer = AutoTokenizer.from_pretrained("aeonium/Aeonium-v1-Base-7B")
 
@@ -54,7 +57,8 @@ def process_file(file_path, output_dir, num_workers):
         results = list(tqdm(pool.imap_unordered(process_batch, args), total=len(args)))
 
     flattened_results = [item for sublist in results for item in sublist]
-    print(len(flattened_results))
+    print(f"\n\n\n{flattened_results[0]}\n\n")
+    print(f"\n\n\n{len(flattened_results)}\n\n")
     save_pickle(flattened_results, f"{output_dir}/{os.path.basename(file_path).split('.')[0]}.pkl")
     #os.remove(file_path)
 
