@@ -1,6 +1,5 @@
 from datasets import Dataset
 from transformers import AutoTokenizer
-from multiprocessing import Pool
 import pyarrow.parquet as pq
 from tqdm import tqdm
 import argparse
@@ -41,7 +40,7 @@ def tokenization(example):
     return tokenizer(example["text"])
 
 
-def main(output_dir: str, num_workers: int):
+def main(output_dir: str, batch_size: int):
     os.makedirs(output_dir, exist_ok=True)
 
     for i in tqdm(range(0, 1535), desc="Processing files..."):
@@ -52,7 +51,7 @@ def main(output_dir: str, num_workers: int):
         table = pq.read_table(file_path)
         dataset = Dataset.from_pandas(table.to_pandas())
 
-        results = dataset.map(tokenization, batched=True)
+        results = dataset.map(tokenization, batched=True, batch_size=batch_size)
 
         save_pickle(results, f"{output_dir}/ru_part_{str(i).zfill(5)}.pkl")
         os.remove(file_path)
@@ -61,7 +60,7 @@ def main(output_dir: str, num_workers: int):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--output_dir", type=str, required=True)
-    parser.add_argument("--num_workers", type=int, default=4)
+    parser.add_argument("--batch_size", type=int, default=1000)
     args = parser.parse_args()
 
     main(args.output_dir, args.num_workers)
