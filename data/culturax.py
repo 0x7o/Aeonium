@@ -27,8 +27,7 @@ def download_file(file_path: str, url: str):
             file.write(chunk)
 
 
-def parquet_iterator(file_path: str):
-    table = pq.read_table(file_path)
+def parquet_iterator(table):
     for row in table[0]:
         yield str(row)
 
@@ -50,8 +49,15 @@ def main(output_dir: str, num_workers: int):
         url = f"https://huggingface.co/datasets/uonlp/CulturaX/resolve/main/ru/ru_part_{str(i).zfill(5)}.parquet?download=true"
         download_file(file_path, url)
 
+        table = pq.read_table(file_path)
+
         with Pool(num_workers) as pool:
-            results = list(tqdm(pool.imap(process_text, parquet_iterator(file_path))))
+            results = list(
+                tqdm(
+                    pool.imap(process_text, parquet_iterator(table)),
+                    total=len(table / num_workers),
+                )
+            )
 
         save_pickle(results, f"{output_dir}/ru_part_{str(i).zfill(5)}.pkl")
         os.remove(file_path)
