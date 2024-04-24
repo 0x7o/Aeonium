@@ -32,8 +32,8 @@ def parquet_iterator(table):
         yield str(row)
 
 
-def process_text(text: str):
-    return tokenizer.encode_plus(text)
+def process_batch(batch: str):
+    return tokenizer.batch_encode_plus(batch)
 
 
 def save_pickle(data, file_path):
@@ -52,12 +52,11 @@ def main(output_dir: str, num_workers: int):
         table = pq.read_table(file_path)
 
         with Pool(num_workers) as pool:
-            results = list(
-                tqdm(
-                    pool.imap(process_text, parquet_iterator(table)),
-                    total=len(table),
-                )
-            )
+            batch_size = 1000
+            results = []
+            for i in tqdm(range(0, len(table), batch_size)):
+                batch = [str(row) for row in table[0][i:i + batch_size]]
+                results.extend(pool.imap_unordered(process_batch, [batch]))
 
         save_pickle(results, f"{output_dir}/ru_part_{str(i).zfill(5)}.pkl")
         os.remove(file_path)
