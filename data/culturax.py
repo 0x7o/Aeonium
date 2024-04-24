@@ -17,7 +17,10 @@ def download_file(file_path: str, url: str):
     )
 
     with open(file_path, "wb") as file:
-        for chunk in tqdm(response.iter_content(chunk_size=128)):
+        for chunk in tqdm(
+            response.iter_content(chunk_size=128),
+            total=int(response.headers.get("content-length", 0)) / 128,
+        ):
             file.write(chunk)
 
 
