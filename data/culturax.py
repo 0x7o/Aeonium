@@ -8,6 +8,7 @@ import pickle
 import os
 
 hf_token = os.getenv("HF_TOKEN")
+tokenizer = AutoTokenizer.from_pretrained("aeonium/Aeonium-v1-Base-7B")
 
 
 def download_file(file_path: str, url: str):
@@ -26,41 +27,23 @@ def download_file(file_path: str, url: str):
             file.write(chunk)
 
 
-def parquet_iterator(table):
-    for row in table[0]:
-        yield str(row)
+def parquet_iterator(file_path):
+    table = pq.read_table(file_path)
+    for record in table.to_pandas().itertuples(index=False):
+        yield record
+
+
+def process_text(text: str):
+    return tokenizer.encode_plus(text, add_special_tokens=True, return_tensors="pt")
 
 
 def save_pickle(data, file_path):
     with open(file_path, "wb") as file:
-        pickle.dump(data, file)
+        pickle.dump(data, file_path)
 
 
-def process_batch(args):
-    batch, tokenizer = args
-    batch_text = [str(row) for row in batch]
-    return tokenizer.batch_encode_plus(batch_text)['input_ids']
-
-
-def process_file(file_path, output_dir, num_workers):
-    #if os.path.exists(f"{output_dir}/{os.path.basename(file_path).split('.')[0]}.pkl"):
-    #    return
-
-    table = pq.read_table(file_path)
-    tokenizer = AutoTokenizer.from_pretrained("aeonium/Aeonium-v1-Base-7B")
-
-    batch_size = len(table) // num_workers
-    batches = [table[i:i + batch_size] for i in range(0, len(table), batch_size)]
-
-    with Pool(num_workers) as pool:
-        args = [(batch, tokenizer) for batch in batches]
-        results = list(tqdm(pool.imap_unordered(process_batch, args), total=len(args)))
-
-    flattened_results = [item for sublist in results for item in sublist]
-    print(f"\n\n\n{flattened_results[0]}\n\n")
-    print(f"\n\n\n{len(flattened_results)}\n\n")
-    save_pickle(flattened_results, f"{output_dir}/{os.path.basename(file_path).split('.')[0]}.pkl")
-    #os.remove(file_path)
+def worker_task(text_batch):
+    return [process_text(text) for text in text_batch]
 
 
 def main(output_dir: str, num_workers: int):
@@ -70,7 +53,19 @@ def main(output_dir: str, num_workers: int):
         file_path = f"{output_dir}/ru_part_{str(i).zfill(5)}.parquet"
         url = f"https://huggingface.co/datasets/uonlp/CulturaX/resolve/main/ru/ru_part_{str(i).zfill(5)}.parquet?download=true"
         download_file(file_path, url)
-        process_file(file_path, output_dir, num_workers)
+
+        data_iter = list(parquet_iterator(file_path))
+        chunk_size = len(data_iter) // num_workers
+
+        chunks = [data_iter[i * chunk_size:(i + 1) * chunk_size] for i in range(num_workers)]
+
+        with Pool(num_workers) as pool:
+            results = pool.map(worker_task, chunks)
+
+        results = [item for sublist in results for item in sublist]
+
+        save_pickle(results, f"{output_dir}/ru_part_{str(i).zfill(5)}.pkl")
+        os.remove(file_path)
 
 
 if __name__ == "__main__":
