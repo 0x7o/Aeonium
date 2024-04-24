@@ -32,7 +32,7 @@ def process_text(text: str):
 
 
 def save_pickle(data, file_path):
-    table = pa.Table.from_arrays([data], names=['tokens'])
+    table = pa.Table.from_arrays([data], names=["tokens"])
     pq.write_table(table, file_path)
 
 
@@ -51,10 +51,10 @@ def main(output_dir: str, batch_size: int):
         table = pq.read_table(file_path)
         dataset = Dataset.from_pandas(table.to_pandas())
 
-        results = dataset.map(tokenization, batched=True, batch_size=batch_size)
-        print(len(results))
+        dataset.map(tokenization, batched=True, batch_size=batch_size).to_parquet(
+            f"{output_dir}/ru_part_{str(i).zfill(5)}.parquet"
+        )
 
-        save_pickle(results, f"{output_dir}/ru_part_{str(i).zfill(5)}.parquet")
         os.remove(file_path)
 
 
