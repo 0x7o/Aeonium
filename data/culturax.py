@@ -4,7 +4,8 @@ import pyarrow.parquet as pq
 from tqdm import tqdm
 import argparse
 import requests
-import pickle
+import numpy
+import gzip
 import os
 
 hf_token = os.getenv("HF_TOKEN")
@@ -32,8 +33,8 @@ def process_text(text: str):
 
 
 def save_pickle(data, file_path):
-    with open(file_path, "wb") as f:
-        pickle.dump(data, f)
+    with gzip.GzipFile(file_path, "w") as f:
+        numpy.save(f, data)
 
 
 def tokenization(example):
@@ -53,7 +54,7 @@ def main(output_dir: str, batch_size: int):
 
         results = dataset.map(tokenization, batched=True, batch_size=batch_size)
 
-        save_pickle(results, f"{output_dir}/ru_part_{str(i).zfill(5)}.pkl")
+        save_pickle(results, f"{output_dir}/ru_part_{str(i).zfill(5)}.pkl.gz")
         os.remove(file_path)
 
 
