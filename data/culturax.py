@@ -51,9 +51,9 @@ def main(output_dir: str, batch_size: int):
         table = pq.read_table(file_path)
         dataset = Dataset.from_pandas(table.to_pandas())
 
-        with open(f"{output_dir}/ru_part_{str(i).zfill(5)}_processed.parquet", "wb") as f:
+        with open(f"{output_dir}/ru_part_{str(i).zfill(5)}.parquet.gzip", "wb") as f:
             dataset = dataset.map(tokenization, batched=True, batch_size=batch_size)
-            dataset.to_pandas().to_parquet(f)
+            dataset.to_pandas().to_parquet(f, compression="gzip")
 
         os.remove(file_path)
 
