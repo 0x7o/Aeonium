@@ -56,3 +56,5 @@ if __name__ == "__main__":
     parser.add_argument("--output_dir", type=str, required=True)
     parser.add_argument("--num_workers", type=int, default=4)
     args = parser.parse_args()
+
+    main(args.output_dir, args.num_workers)
