@@ -53,7 +53,8 @@ def main(output_dir: str, batch_size: int):
 
         with open(f"{output_dir}/ru_part_{str(i).zfill(5)}.parquet.gzip", "wb") as f:
             dataset = dataset.map(tokenization, batched=True, batch_size=batch_size)
-            dataset.to_pandas().to_parquet(f, compression="gzip")
+            n = sum([len(x) for x in dataset.to_dict()["input_ids"]])
+            print(f"\n\n\n\n\n{n}\n\n\n\n")
 
         os.remove(file_path)
 
