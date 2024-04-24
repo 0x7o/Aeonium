@@ -55,7 +55,7 @@ def main(output_dir: str, num_workers: int):
             results = list(
                 tqdm(
                     pool.imap(process_text, parquet_iterator(table)),
-                    total=len(table) / num_workers,
+                    total=len(table),
                 )
             )
 
