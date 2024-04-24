@@ -54,8 +54,9 @@ def process_file(file_path, output_dir, num_workers):
         results = list(tqdm(pool.imap_unordered(process_batch, args), total=len(args)))
 
     flattened_results = [item for sublist in results for item in sublist]
+    print(len(flattened_results))
     save_pickle(flattened_results, f"{output_dir}/{os.path.basename(file_path).split('.')[0]}.pkl")
-    os.remove(file_path)
+    #os.remove(file_path)
 
 
 def main(output_dir: str, num_workers: int):
