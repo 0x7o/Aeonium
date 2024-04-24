@@ -33,17 +33,13 @@ def parquet_iterator(file_path):
         yield record
 
 
-def process_text(text: str):
-    return tokenizer.encode_plus(text, add_special_tokens=True, return_tensors="pt")
+def process_batch(batch):
+    return tokenizer.batch_encode_plus(batch)
 
 
 def save_pickle(data, file_path):
-    with open(file_path, "wb") as file:
+    with open(file_path, "wb"):
         pickle.dump(data, file_path)
-
-
-def worker_task(text_batch):
-    return [process_text(text) for text in text_batch]
 
 
 def main(output_dir: str, num_workers: int):
@@ -58,9 +54,11 @@ def main(output_dir: str, num_workers: int):
         chunk_size = len(data_iter) // num_workers
 
         chunks = [data_iter[i * chunk_size:(i + 1) * chunk_size] for i in range(num_workers)]
+        print(len(chunks))
+        print(len(chunks[0]))
 
         with Pool(num_workers) as pool:
-            results = pool.map(worker_task, chunks)
+            results = pool.map(process_batch, chunks)
 
         results = [item for sublist in results for item in sublist]
 
