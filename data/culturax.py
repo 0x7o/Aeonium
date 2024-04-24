@@ -45,7 +45,7 @@ def save_pickle(data, file_path):
 def main(output_dir: str, num_workers: int):
     os.makedirs(output_dir, exist_ok=True)
 
-    for i in range(0, 1535):
+    for i in tqdm(range(0, 1535), desc="Processing files..."):
         file_path = f"{output_dir}/ru_part_{str(i).zfill(5)}.parquet"
         url = f"https://huggingface.co/datasets/uonlp/CulturaX/resolve/main/ru/ru_part_{str(i).zfill(5)}.parquet?download=true"
         download_file(file_path, url)
