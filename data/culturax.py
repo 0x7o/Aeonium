@@ -16,6 +16,9 @@ def download_file(file_path: str, url: str):
         url, headers={"Authorization": f"Bearer {hf_token}"}, stream=True
     )
 
+    if os.path.exists(file_path):
+        return
+
     with open(file_path, "wb") as file:
         for chunk in tqdm(
             response.iter_content(chunk_size=128),
@@ -26,8 +29,8 @@ def download_file(file_path: str, url: str):
 
 def parquet_iterator(file_path: str):
     table = pq.read_table(file_path)
-    for row in table.iterrows():
-        yield row.to_pydict()["text"]
+    for row in table[0]:
+        yield str(row)
 
 
 def process_text(text: str):
