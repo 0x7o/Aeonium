@@ -29,12 +29,11 @@ def download_file(file_path: str, url: str):
 
 def parquet_iterator(file_path):
     table = pq.read_table(file_path)
-    for record in table.to_pandas().itertuples(index=False):
-        yield record
+    for record in table[0]:
+        yield str(record)
 
 
 def process_batch(batch):
-    batch = [str(x) for x in batch]
     return tokenizer.batch_encode_plus(batch)
 
 
