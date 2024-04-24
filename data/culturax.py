@@ -8,7 +8,6 @@ import pickle
 import os
 
 hf_token = os.getenv("HF_TOKEN")
-tokenizer = AutoTokenizer.from_pretrained("aeonium/Aeonium-v1-Base-7B")
 
 
 def download_file(file_path: str, url: str):
@@ -39,7 +38,8 @@ def save_pickle(data, file_path):
 
 def process_batch(args):
     batch, tokenizer = args
-    return tokenizer.batch_encode_plus(batch)['input_ids']
+    batch_text = [str(row) for row in batch]
+    return tokenizer.batch_encode_plus(batch_text)['input_ids']
 
 
 def process_file(file_path, output_dir, num_workers):
