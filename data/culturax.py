@@ -18,8 +18,8 @@ def download_file(file_path: str, url: str):
 
     with open(file_path, "wb") as file:
         for chunk in tqdm(
-                response.iter_content(chunk_size=128),
-                total=int(response.headers.get("content-length", 0)) / 128,
+            response.iter_content(chunk_size=128),
+            total=int(response.headers.get("content-length", 0)) / 128,
         ):
             file.write(chunk)
 
@@ -33,16 +33,13 @@ def main():
         table = pq.read_table(file_path)
 
         with mlxu.utils.open_file(
-                f"gs://aeonium-checkpoints/culturax/ru_part_{str(i).zfill(5)}.json", "w"
+            f"gs://aeonium-checkpoints/culturax/ru_part_{str(i).zfill(5)}.json", "w"
         ) as file:
             batch = ""
-            num = 0
-            s = len(table[0]) - 1
-            for idx, item in enumerate(table[0]):
+            for item in table[0]:
                 text = str(item)
-                batch += json.dumps({"text": text}) + "\n"
-                if num % 1000 == 0 or idx == s:
-                    file.write(batch)
+                file.write(json.dumps({"text": text}) + "\n")
+            file.write(batch)
 
         os.remove(file_path)
 
