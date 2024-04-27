@@ -35,11 +35,9 @@ def main():
         with mlxu.utils.open_file(
             f"gs://aeonium-checkpoints/culturax/ru_part_{str(i).zfill(5)}.json", "w"
         ) as file:
-            batch = ""
             for item in table[0]:
                 text = str(item)
                 file.write(json.dumps({"text": text}) + "\n")
-            file.write(batch)
 
         os.remove(file_path)
 
