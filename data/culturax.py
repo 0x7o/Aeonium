@@ -31,15 +31,13 @@ def main():
         download_file(file_path, url)
 
         table = pq.read_table(file_path)
-        content = ""
-        for item in table[0]:
-            text = str(item)
-            content += json.dumps({"text": text}) + "\n"
 
         with mlxu.utils.open_file(
             f"gs://aeonium-checkpoints/culturax/ru_part_{str(i).zfill(5)}.json", "w"
         ) as file:
-            file.write(content)
+            for item in table[0]:
+                text = str(item)
+                file.write(json.dumps({"text": text}) + "\n")
 
         os.remove(file_path)
 
