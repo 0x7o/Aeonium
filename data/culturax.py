@@ -25,7 +25,7 @@ def download_file(file_path: str, url: str):
 
 
 def main():
-    for i in tqdm(range(0, 1535), desc="Processing files..."):
+    for i in tqdm(range(1, 1535), desc="Processing files..."):
         file_path = f"ru_part_{str(i).zfill(5)}.parquet"
         url = f"https://huggingface.co/datasets/uonlp/CulturaX/resolve/main/ru/ru_part_{str(i).zfill(5)}.parquet?download=true"
         download_file(file_path, url)
